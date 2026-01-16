@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-01-16
+
+### Fixed
+
+- TypeScript type definitions now correctly bundled with package (`dts: true` in tsup config)
+- Fixed `hexToRgb` return type (throws error instead of returning null)
+- Fixed `detectColorSupport` and `supportsColor` type signatures to use strict level union
+- Fixed proxy context access for type-safe property access
+- Fixed v8 coverage configuration to prevent duplicate file reporting
+
+### Changed
+
+- Improved vitest coverage configuration with `all: false` and `clean: true` options
+- Updated `PigmentContext.utils` type definitions for stricter type checking
+
 ## [1.0.0] - 2026-01-16
 
 ### Added
@@ -63,5 +78,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [npm Package](https://www.npmjs.com/package/@oxog/pigment)
 - [Issue Tracker](https://github.com/ersinkoc/pigment/issues)
 
-[Unreleased]: https://github.com/ersinkoc/pigment/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/ersinkoc/pigment/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/ersinkoc/pigment/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/ersinkoc/pigment/releases/tag/v1.0.0
