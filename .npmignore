@@ -1,0 +1,41 @@
+# Source
+src/
+tests/
+examples/
+website/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Configuration
+tsconfig.json
+vitest.config.ts
+tsup.config.ts
+.eslintrc.cjs
+.prettierrc
+.prettierignore
+.gitignore
+.npmignore
+
+# Documentation
+SPECIFICATION.md
+IMPLEMENTATION.md
+TASKS.md
+llms.txt
+oxog-pigment-prompt.md
+
+# CI/CD
+.github/
+
+# Testing
+coverage/
+*.test.ts
+*.spec.ts
+
+# Development
+.DS_Store
+.vscode
+.idea
+
+# Logs
+*.log

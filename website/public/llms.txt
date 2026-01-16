@@ -1,0 +1,181 @@
+# Pigment LLM Guide
+
+@oxog/pigment - Zero-dependency terminal styling with micro-kernel architecture and Chalk drop-in compatibility.
+
+## Quick Start
+
+```typescript
+// Primary: Proxy-based chaining
+import { pigment } from '@oxog/pigment';
+pigment.bold.red('Error!');
+pigment.italic.blue.bgWhite('Info');
+
+// Alternative: Function composition (tree-shakeable)
+import { bold, red, compose } from '@oxog/pigment';
+const error = compose(bold, red);
+
+// Alternative: Builder pattern
+import { createPigment } from '@oxog/pigment';
+const p = createPigment().bold().red();
+p.paint('Styled text');
+
+// Chalk-compatible (drop-in replacement)
+import chalk from '@oxog/pigment';
+chalk.red.bold('Error');
+```
+
+## Colors
+
+```typescript
+// 16 base colors
+pigment.black|red|green|yellow|blue|magenta|cyan|white
+
+// Bright variants
+pigment.blackBright|redBright|greenBright|yellowBright|blueBright|magentaBright|cyanBright|whiteBright
+
+// Aliases
+pigment.gray|grey
+
+// Background colors
+pigment.bgBlack|bgRed|bgGreen|bgYellow|bgBlue|bgMagenta|bgCyan|bgWhite
+```
+
+## Modifiers
+
+```typescript
+pigment.bold|dim|italic|underline|strikethrough|inverse|hidden|reset('text')
+```
+
+## Extended Colors
+
+```typescript
+// ANSI 256 (0-255)
+pigment.ansi256(196)('Bright red');
+pigment.bgAnsi256(21)('Blue background');
+
+// True color (RGB)
+pigment.rgb(255, 136, 0)('Orange');
+pigment.bgRgb(0, 120, 255)('Blue background');
+
+// HEX
+pigment.hex('#FF8800')('Orange');
+pigment.bgHex('#0078FF')('Blue background');
+
+// HSL
+pigment.hsl(30, 100, 50)('Orange');
+pigment.bgHsl(210, 100, 50)('Blue background');
+```
+
+## Environment
+
+```typescript
+import { supportsColor, detectColorSupport } from '@oxog/pigment';
+
+// Check color support
+supportsColor; // { level: 3, hasBasic: true, has256: true, has16m: true }
+
+// Override level
+const pigment = createPigment({ level: 3 });
+
+// Environment variables
+// NO_COLOR - disables all colors
+// FORCE_COLOR=3 - forces true color
+```
+
+## Plugins
+
+```typescript
+import { createPigment } from '@oxog/pigment';
+import { gradientPlugin, themePlugin, semanticPlugin } from '@oxog/pigment/plugins';
+
+const pigment = createPigment({
+  plugins: [gradientPlugin(), themePlugin({ preset: 'monokai' }), semanticPlugin()]
+});
+
+// Gradient
+pigment.gradient('red', 'blue')('Text');
+
+// Theme
+pigment.theme.keyword('const');
+pigment.theme.string('"text"');
+pigment.theme.error('Error!');
+
+// Semantic
+pigment.success('✓ Done');
+pigment.error('✗ Failed');
+pigment.warning('⚠ Warning');
+pigment.info('ℹ Info');
+```
+
+## Chalk Compatibility
+
+```typescript
+// All Chalk v5 features work
+chalk.red('text');
+chalk.bold('text');
+chalk.red.bold('text');
+chalk.rgb(255, 0, 0)('text');
+chalk.hex('#FF0000')('text');
+chalk.ansi256(196)('text');
+chalk.bgRed('text');
+chalk.visible('text');
+chalk.level; // 0-3
+chalk.supportsColor; // ColorSupport object
+new Chalk({ level: 2 });
+```
+
+## Nested Styles
+
+```typescript
+pigment.red(`Error: ${pigment.bold('critical')} issue`);
+```
+
+## Platform Support
+
+- Node.js: ANSI escape codes
+- Browser: CSS %c styling
+- Auto-detects platform
+- Same API everywhere
+
+## Key Features
+
+- Zero dependencies (not even @oxog packages)
+- Micro-kernel architecture with plugin system
+- Chalk v5 drop-in compatible
+- Universal (Node.js + Browser)
+- TypeScript strict mode
+- 100% test coverage target
+- < 3KB core gzipped, < 12KB full gzipped
+
+## Plugin Options
+
+```typescript
+// Gradient
+gradientPlugin({ steps: 10 })
+
+// Theme (presets: monokai, dracula, nord, github, vscode, tokyo-night, catppuccin, one-dark, solarized)
+themePlugin({ preset: 'monokai', custom: { error: '#FF0000' } })
+
+// Semantic (customizable colors)
+semanticPlugin({ success: '#00FF00', error: '#FF0000' })
+
+// Box (border: single, double, rounded, bold, classic)
+boxPlugin({ border: 'double', padding: 2 })
+```
+
+## Ecosystem Integration
+
+```typescript
+import { pigmentPlugin } from '@oxog/pigment/plugins';
+
+// For @oxog/log, @oxog/cli
+log.use(pigmentPlugin({ theme: 'monokai', level: 3 }));
+```
+
+## Important Notes
+
+- NO_COLOR environment variable disables all colors
+- FORCE_COLOR=0-3 forces color level
+- TTY detection for non-color terminals
+- All color codes validated (0-255 for ANSI 256, 0-255 for RGB)
+- All imports are tree-shakeable
