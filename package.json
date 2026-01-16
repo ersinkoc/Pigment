@@ -1,6 +1,6 @@
 {
   "name": "@oxog/pigment",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Terminal styling with micro-kernel plugin architecture, Chalk compatibility, and full @oxog ecosystem integration",
   "type": "module",
   "main": "./dist/index.js",
