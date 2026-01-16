@@ -89,3 +89,8 @@ Thumbs.db
 
 # Turborepo
 .turbo
+
+.serena/
+.playwright-mcp/
+.playwright-report/
+.playwright-video/
