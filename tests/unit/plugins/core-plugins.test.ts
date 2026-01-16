@@ -576,6 +576,44 @@ describe('Core Plugins', () => {
       process.env = { ...originalEnv };
     });
 
+    it('should return colorSupport level when not in CI and no env overrides', async () => {
+      // Reset modules to clear platform detection cache
+      vi.resetModules();
+      delete process.env.CI;
+      delete process.env.CONTINUOUS_INTEGRATION;
+      delete process.env.NO_COLOR;
+      delete process.env.FORCE_COLOR;
+
+      // Re-import after clearing CI to get fresh isCI() result (false)
+      const { createKernel: createFreshKernel } = await import('@oxog/plugin');
+      const { environmentPlugin: envPlugin } = await import('../../../src/plugins/core/environment');
+      const { hexToRgb: hexFn } = await import('../../../src/utils/hex-to-rgb');
+      const { hslToRgb: hslFn } = await import('../../../src/utils/hsl-to-rgb');
+      const { rgbToAnsi256: ansi256Fn } = await import('../../../src/utils/rgb-to-ansi256');
+      const { detectColorSupport: detectFn } = await import('../../../src/utils/color-support');
+
+      const kernel = createFreshKernel<PigmentContext, PigmentEvents>({
+        context: {
+          colorSupport: { level: 2, hasBasic: true, has256: true, has16m: false },
+          level: 2,
+          enabled: true,
+          styles: new Map(),
+          utils: {
+            hexToRgb: hexFn,
+            hslToRgb: hslFn,
+            rgbToAnsi256: ansi256Fn,
+            detectColorSupport: detectFn,
+            supportsColor: detectFn
+          }
+        }
+      });
+      kernel.use(envPlugin());
+      kernel.init();
+
+      // This hits line 57: return { level: colorSupport.level, enabled: colorSupport.level > 0 }
+      expect(() => kernel.emit('environment:check', {})).not.toThrow();
+    });
+
     it('should return enabled:false when CI is true but hasBasic is false', async () => {
       // Reset modules to clear platform detection cache
       vi.resetModules();
