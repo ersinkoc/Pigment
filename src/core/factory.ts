@@ -42,7 +42,7 @@ import { environmentPlugin } from '../plugins/core/environment.js';
  * });
  * ```
  */
-export function createPigment(options?: PigmentOptions): Pigment & { builder: BuilderPigment } {
+export function createPigment(options?: PigmentOptions): Pigment & { builder: BuilderPigment; level: number; supportsColor: import('../types.js').ColorSupport } {
   const colorSupport = detectColorSupport(options?.level);
   const noColor = options?.noColor ?? false;
   const forceColor = options?.forceColor ?? false;
@@ -92,5 +92,5 @@ export function createPigment(options?: PigmentOptions): Pigment & { builder: Bu
   Object.defineProperty(pigment, 'level', { value: level, enumerable: true });
   Object.defineProperty(pigment, 'supportsColor', { value: colorSupport, enumerable: true });
 
-  return pigment as Pigment & { builder: BuilderPigment };
+  return pigment as Pigment & { builder: BuilderPigment; level: number; supportsColor: import('../types.js').ColorSupport };
 }

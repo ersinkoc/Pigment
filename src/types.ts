@@ -121,11 +121,11 @@ export interface PigmentContext {
   };
   /** Utility functions */
   utils?: {
-    hexToRgb: (hex: string) => { r: number; g: number; b: number } | null;
+    hexToRgb: (hex: string) => { r: number; g: number; b: number };
     hslToRgb: (h: number, s: number, l: number) => { r: number; g: number; b: number };
     rgbToAnsi256: (r: number, g: number, b: number) => number;
-    detectColorSupport: (level?: number) => ColorSupport;
-    supportsColor: (level?: number) => ColorSupport;
+    detectColorSupport: (level?: 0 | 1 | 2 | 3) => ColorSupport;
+    supportsColor: (level?: 0 | 1 | 2 | 3) => ColorSupport;
   };
 }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
+import { CodeBlock as CodeshinBlock } from '@oxog/codeshine/react';
 
 interface CodeBlockProps {
   code: string;
@@ -8,6 +9,7 @@ interface CodeBlockProps {
   filename?: string;
   showLineNumbers?: boolean;
   showCopyButton?: boolean;
+  highlightLines?: (number | string)[];
   className?: string;
 }
 
@@ -17,6 +19,7 @@ export function CodeBlock({
   filename,
   showLineNumbers = true,
   showCopyButton = true,
+  highlightLines,
   className = '',
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
@@ -28,7 +31,8 @@ export function CodeBlock({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const lines = code.trim().split('\n');
+  // Theme mapping for site compatibility
+  const codeshinTheme = resolvedTheme === 'dark' ? 'github-dark' : 'github-light';
 
   return (
     <div
@@ -78,22 +82,18 @@ export function CodeBlock({
         </div>
       </div>
 
-      {/* Code Block */}
-      <div className="overflow-x-auto">
-        <pre className={`p-4 text-sm leading-relaxed ${resolvedTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-50'}`}>
-          <code>
-            {lines.map((line, i) => (
-              <div key={i} className="flex">
-                {showLineNumbers && (
-                  <span className="select-none pr-4 text-muted-foreground text-right w-8">
-                    {i + 1}
-                  </span>
-                )}
-                <span>{line}</span>
-              </div>
-            ))}
-          </code>
-        </pre>
+      {/* Codeshine Syntax Highlighted Code Block */}
+      <div className="codeshine-wrapper overflow-x-auto [&_.cs-codeblock]:bg-transparent! [&_.cs-codeblock]:m-0! [&_.cs-codeblock]:rounded-none! [&_.cs-codeblock]:border-0! [&_.cs-header]:hidden! [&_.cs-line]:block [&_.cs-line]:min-h-[1.5em] [&_.cs-line-number]:inline-block [&_.cs-line-number]:w-8 [&_.cs-line-number]:pr-4 [&_.cs-line-number]:text-right [&_.cs-line-number]:select-none [&_.cs-line-number]:text-muted-foreground">
+        <CodeshinBlock
+          code={code.trim()}
+          language={language}
+          theme={codeshinTheme}
+          lineNumbers={showLineNumbers}
+          highlightLines={highlightLines}
+          copyButton={false}
+          showLanguageBadge={false}
+          wrapLines={false}
+        />
       </div>
     </div>
   );

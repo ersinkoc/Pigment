@@ -20,11 +20,11 @@ export function createProxyPigment(kernel: PigmentKernel, styles: Style[] = []):
       const ctx = kernel.getContext();
 
       if (prop === 'level') {
-        return (ctx as Record<string, unknown>)[prop];
+        return ctx.level;
       }
 
       if (prop === 'supportsColor') {
-        return (ctx as Record<string, unknown>)['colorSupport'];
+        return ctx.colorSupport;
       }
 
       if (MODIFIER_NAMES.includes(prop as any)) {

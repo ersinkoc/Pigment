@@ -91,7 +91,7 @@ import { hslToRgb } from './utils/hsl-to-rgb.js';
 import { rgbToAnsi256 } from './utils/rgb-to-ansi256.js';
 import * as plugins from './plugins/index.js';
 
-const pigment = createPigmentInternal() as Pigment & { level: number; supportsColor: ColorSupport };
+const pigment = createPigmentInternal();
 Object.assign(pigment, {
   bold,
   dim,

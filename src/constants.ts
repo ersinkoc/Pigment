@@ -1,3 +1,5 @@
+import type { ThemePresetColors, BoxChars } from './types.js';
+
 export const ANSI_MODIFIERS = {
   bold: { open: '\x1b[1m', close: '\x1b[22m' },
   dim: { open: '\x1b[2m', close: '\x1b[22m' },
