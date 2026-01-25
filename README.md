@@ -167,7 +167,7 @@ pigment.bgHsl(210, 100, 50)('Blue background');
 ## Environment Detection
 
 ```typescript
-import { pigment, supportsColor } from '@oxog/pigment';
+import { pigment, supportsColor, resetColorSupportCache } from '@oxog/pigment';
 
 // Check color support
 console.log(supportsColor);
@@ -175,6 +175,9 @@ console.log(supportsColor);
 
 // Override level
 const pigment = createPigment({ level: 3 });
+
+// Reset cached detection (useful for testing)
+resetColorSupportCache();
 ```
 
 ### Environment Variables

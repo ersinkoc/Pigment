@@ -25,7 +25,11 @@ export function environmentPlugin(): Plugin<PigmentContext> {
     install(kernel) {
       const k = kernel as PigmentKernel;
       const ci = isCI();
-      const colorSupport = detectColorSupport();
+      const existingContext = k.getContext();
+
+      // Preserve the colorSupport level if it was explicitly set via options
+      // Only detect fresh if no level was set
+      const colorSupport = existingContext.colorSupport ?? detectColorSupport();
 
       k.updateContext({
         environment: {
@@ -33,8 +37,8 @@ export function environmentPlugin(): Plugin<PigmentContext> {
           noColor: process.env.NO_COLOR !== undefined,
           forceColor: process.env.FORCE_COLOR !== undefined,
           term: process.env.TERM ?? ''
-        },
-        colorSupport
+        }
+        // Don't overwrite colorSupport - it was already set in factory with the correct level
       } as Partial<PigmentContext>);
 
       k.on('environment:check', () => {

@@ -1,12 +1,18 @@
 import type { Plugin, PigmentContext, PigmentKernel } from '../../types.js';
 
 /**
- * Core plugin that provides nested/composed style support.
+ * Core plugin that enables nested/composed style support.
+ *
+ * Nesting is handled directly in applyStyles() by replacing inner reset codes
+ * with outer style reopeners. This plugin just sets the enabled flag for
+ * compatibility and to indicate nesting support is active.
  *
  * @example
  * ```typescript
  * const pigment = createPigment();
- * pigment.red(`Error: ${pigment.bold('critical')} issue`);
+ * // Nested styles work automatically:
+ * pigment.red(`Error: ${pigment.blue('details')} here`);
+ * // Output: "Error: " (red), "details" (blue), " here" (red again)
  * ```
  */
 export function nestingPlugin(): Plugin<PigmentContext> {
@@ -22,15 +28,6 @@ export function nestingPlugin(): Plugin<PigmentContext> {
           enabled: true
         }
       } as Partial<PigmentContext>);
-
-      k.on('style:nest', (data) => {
-        const { innerText, outerStyles } = data as { innerText: string; outerStyles: string[]; _innerStyles: string[] };
-
-        const open = outerStyles.join('');
-        const close = outerStyles.map(() => '\x1b[0m').join('');
-
-        return `${open}${innerText}${close}`;
-      });
     }
   };
 }

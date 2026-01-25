@@ -1,17 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { detectColorSupport, supportsColor } from '../../src/utils/color-support';
+import { detectColorSupport, supportsColor, resetColorSupportCache } from '../../src/utils/color-support';
 
 describe('Color Support Detection', () => {
   const originalEnv = { ...process.env };
   const originalStdout = process.stdout;
 
   beforeEach(() => {
-    // Reset the cached color support by re-importing the module
+    // Reset the cached color support
     vi.resetModules();
+    resetColorSupportCache();
   });
 
   afterEach(() => {
     process.env = { ...originalEnv };
+    resetColorSupportCache();
   });
 
   describe('detectColorSupport', () => {
@@ -287,9 +289,11 @@ describe('Color Support Detection', () => {
       const { detectColorSupport: detect } = await import('../../src/utils/color-support');
       const result = detect();
 
-      // Browser environments get full color support (level 3)
-      expect(result.level).toBe(3);
-      expect(result.has16m).toBe(true);
+      // Browser environments get basic color support (level 1) - conservative default
+      // since not all browsers/webviews support full ANSI colors
+      expect(result.level).toBe(1);
+      expect(result.hasBasic).toBe(true);
+      expect(result.has16m).toBe(false);
 
       vi.doUnmock('../../src/utils/platform');
     });
@@ -318,6 +322,42 @@ describe('Color Support Detection', () => {
       expect(result.hasBasic).toBe(false);
 
       vi.doUnmock('../../src/utils/platform');
+    });
+  });
+
+  describe('resetColorSupportCache', () => {
+    it('should clear the cached color support', () => {
+      // First call should cache a result
+      const first = detectColorSupport();
+
+      // Reset the cache
+      resetColorSupportCache();
+
+      // Set a different environment
+      process.env.FORCE_COLOR = '0';
+
+      // Second call after reset should detect fresh
+      const second = detectColorSupport();
+
+      // The results should be different due to cache reset and env change
+      // Note: This tests that reset actually clears the cache
+      expect(second.level).toBe(0);
+    });
+
+    it('should allow re-detection after reset', () => {
+      // Force level 3
+      process.env.FORCE_COLOR = '3';
+      delete process.env.NO_COLOR;
+
+      resetColorSupportCache();
+      const result1 = detectColorSupport();
+      expect(result1.level).toBe(3);
+
+      // Change to level 1
+      process.env.FORCE_COLOR = '1';
+      resetColorSupportCache();
+      const result2 = detectColorSupport();
+      expect(result2.level).toBe(1);
     });
   });
 });

@@ -140,6 +140,10 @@ describe('Main Index Exports', () => {
         expect(typeof PigmentExports.supportsColor).toBe('function');
       });
 
+      it('should export resetColorSupportCache', () => {
+        expect(typeof PigmentExports.resetColorSupportCache).toBe('function');
+      });
+
       it('should export detectPlatform', () => {
         expect(typeof PigmentExports.detectPlatform).toBe('function');
       });

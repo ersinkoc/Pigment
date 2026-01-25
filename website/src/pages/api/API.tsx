@@ -260,6 +260,60 @@ export function API() {
           </tbody>
         </table>
       </section>
+
+      {/* Utility functions */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-4">Utility Functions</h2>
+        <div className="space-y-6">
+          <div className="p-4 rounded-lg border border-border bg-card">
+            <h3 className="font-semibold font-mono text-lg mb-2">detectColorSupport(level?)</h3>
+            <p className="text-muted-foreground mb-4">
+              Detect terminal color support. Returns cached result unless override level is provided.
+            </p>
+            <CodeBlock
+              code={`import { detectColorSupport } from '@oxog/pigment';
+
+// Auto-detect
+const support = detectColorSupport();
+console.log(support.level); // 0-3
+
+// Override detection
+const forced = detectColorSupport(3);`}
+              language="typescript"
+            />
+          </div>
+
+          <div className="p-4 rounded-lg border border-border bg-card">
+            <h3 className="font-semibold font-mono text-lg mb-2">resetColorSupportCache()</h3>
+            <p className="text-muted-foreground mb-4">
+              Reset the cached color support detection. Useful for testing when environment variables change.
+            </p>
+            <CodeBlock
+              code={`import { resetColorSupportCache, detectColorSupport } from '@oxog/pigment';
+
+// Clear cached detection
+resetColorSupportCache();
+
+// Next call will re-detect
+const support = detectColorSupport();`}
+              language="typescript"
+            />
+          </div>
+
+          <div className="p-4 rounded-lg border border-border bg-card">
+            <h3 className="font-semibold font-mono text-lg mb-2">supportsColor()</h3>
+            <p className="text-muted-foreground mb-4">
+              Alias for detectColorSupport(). Returns color support information.
+            </p>
+            <CodeBlock
+              code={`import { supportsColor } from '@oxog/pigment';
+
+const { level, hasBasic, has256, has16m } = supportsColor();`}
+              language="typescript"
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

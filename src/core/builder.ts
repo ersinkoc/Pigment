@@ -288,12 +288,21 @@ export class BuilderPigment {
   }
 
   paint(text: string): string {
-    if (this.styles.length === 0) {
+    if (this.styles.length === 0 || text === '') {
       return text;
     }
 
     const open = this.styles.map((style) => style.open).join('');
     const close = [...this.styles].reverse().map((style) => style.close).join('');
-    return `${open}${text}${close}`;
+
+    // Handle nested styles: replace inner reset codes with outer style reopeners
+    let result = text;
+    for (const style of this.styles) {
+      if (style.close) {
+        result = result.split(style.close).join(style.close + style.open);
+      }
+    }
+
+    return `${open}${result}${close}`;
   }
 }

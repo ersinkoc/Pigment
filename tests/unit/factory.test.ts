@@ -1,16 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createPigment } from '../../src/core/factory';
 import { BuilderPigment } from '../../src/core/builder';
+import { resetColorSupportCache } from '../../src/utils/color-support';
 
 describe('createPigment', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetColorSupportCache();
   });
 
   afterEach(() => {
     process.env = { ...originalEnv };
+    resetColorSupportCache();
   });
 
   describe('Basic creation', () => {
@@ -217,10 +220,12 @@ describe('createPigment', () => {
       expect(result).toBe('test');
     });
 
-    it('should return text when colors are disabled', () => {
+    it('should return empty string when colors are disabled', () => {
       const pigment = createPigment({ level: 0 });
       const result = pigment.visible('test');
-      expect(result).toBe('test');
+      // visible returns empty when colors are not supported
+      // since the text would be styled in a way only meaningful with color support
+      expect(result).toBe('');
     });
   });
 });

@@ -86,7 +86,8 @@ export function createProxyPigment(kernel: PigmentKernel, styles: Style[] = []):
 
       if (prop === 'visible') {
         const colorSupport = ctx.colorSupport;
-        return (text: string) => (colorSupport.level > 0 ? text : text);
+        // visible: show text only when colors are supported, otherwise empty string
+        return (text: string) => (colorSupport.level > 0 ? text : '');
       }
 
       return target[prop as keyof Pigment];
@@ -107,11 +108,24 @@ export function createProxyPigment(kernel: PigmentKernel, styles: Style[] = []):
 }
 
 function applyStyles(text: string, styles: Style[]): string {
-  if (styles.length === 0) {
+  if (styles.length === 0 || text === '') {
     return text;
   }
 
   const open = styles.map((style) => style.open).join('');
   const close = [...styles].reverse().map((style) => style.close).join('');
-  return `${open}${text}${close}`;
+
+  // Handle nested styles: replace inner reset codes with outer style reopeners
+  // This fixes: red('Hata: ' + blue('Detay') + '!')
+  // Where blue's \x1b[39m would kill red - we replace it with red's open code
+  let result = text;
+  for (const style of styles) {
+    if (style.close) {
+      // Replace the inner close codes with the outer open code
+      // This restores the outer style after inner style ends
+      result = result.split(style.close).join(style.close + style.open);
+    }
+  }
+
+  return `${open}${result}${close}`;
 }

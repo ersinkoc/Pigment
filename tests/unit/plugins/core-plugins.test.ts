@@ -517,6 +517,32 @@ describe('Core Plugins', () => {
       // Emit the event - should use fallback '0' for parseInt
       expect(() => kernel.emit('environment:check', {})).not.toThrow();
     });
+
+    it('should detect color support when context has no colorSupport', () => {
+      // Create kernel WITHOUT colorSupport to trigger detectColorSupport fallback
+      const kernel = createKernel<PigmentContext, PigmentEvents>({
+        context: {
+          level: 0,
+          enabled: false,
+          styles: new Map(),
+          utils: {
+            hexToRgb,
+            hslToRgb,
+            rgbToAnsi256,
+            detectColorSupport,
+            supportsColor: detectColorSupport
+          }
+          // Note: colorSupport is intentionally NOT set here
+        } as any
+      });
+
+      kernel.use(environmentPlugin());
+      kernel.init();
+
+      // The environment plugin should have detected colorSupport via fallback
+      const ctx = kernel.getContext() as any;
+      expect(ctx.environment).toBeDefined();
+    });
   });
 
   describe('ansi256Plugin - additional coverage', () => {

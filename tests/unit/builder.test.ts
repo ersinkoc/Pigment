@@ -310,7 +310,8 @@ describe('Builder Pattern API', () => {
 
     it('should handle empty text', () => {
       const result = builder.bold().paint('');
-      expect(result).toContain('\x1b[1m');
+      // Empty strings should return empty without unnecessary ANSI codes
+      expect(result).toBe('');
     });
   });
 

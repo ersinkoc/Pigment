@@ -470,7 +470,7 @@ describe('createProxyPigment', () => {
       expect(result).toBe('test');
     });
 
-    it('should return text unchanged when color is not supported', () => {
+    it('should return empty string when color is not supported', () => {
       const noColorKernel = createKernel<PigmentContext, PigmentEvents>({
         context: {
           colorSupport: { level: 0, hasBasic: false, has256: false, has16m: false },
@@ -489,7 +489,8 @@ describe('createProxyPigment', () => {
       noColorKernel.init();
       const pigment = createProxyPigment(noColorKernel);
       const result = pigment.visible('test');
-      expect(result).toBe('test');
+      // visible returns empty when colors are not supported
+      expect(result).toBe('');
     });
   });
 

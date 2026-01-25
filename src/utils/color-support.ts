@@ -21,11 +21,15 @@ export function detectColorSupport(overrideLevel?: 0 | 1 | 2 | 3): ColorSupport 
   const platform = detectPlatform();
 
   if (platform.isBrowser) {
+    // Browser console color support varies widely
+    // Modern Chrome/Firefox/Edge support colors but not all do TrueColor
+    // Default to level 1 (basic colors) - safer for mobile webviews and older browsers
+    // Users can override with FORCE_COLOR or level option if they need more
     cachedColorSupport = {
-      level: 3,
+      level: 1,
       hasBasic: true,
-      has256: true,
-      has16m: true
+      has256: false,
+      has16m: false
     };
     return cachedColorSupport;
   }
@@ -115,4 +119,12 @@ export function detectColorSupport(overrideLevel?: 0 | 1 | 2 | 3): ColorSupport 
 
 export function supportsColor(): ColorSupport {
   return detectColorSupport();
+}
+
+/**
+ * Reset the cached color support detection.
+ * Useful for testing when environment variables change.
+ */
+export function resetColorSupportCache(): void {
+  cachedColorSupport = undefined;
 }

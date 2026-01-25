@@ -20,6 +20,28 @@ describe('Pigment Integration Tests', () => {
       expect(outer).toContain('Error:');
       expect(outer).toContain('critical');
     });
+
+    it('should restore outer style after inner style ends', () => {
+      // This tests the fix for nested color styles
+      // red('Before ' + blue('middle') + ' after')
+      // Should produce: red-open + "Before " + blue-open + "middle" + blue-close + red-reopen + " after" + red-close
+      const result = pigment.red('Before ' + pigment.blue('middle') + ' after');
+
+      // Check that red is opened at the start
+      expect(result.startsWith('\x1b[31m')).toBe(true);
+
+      // Check that blue codes are present for 'middle'
+      expect(result).toContain('\x1b[34mmiddle');
+
+      // Check that red is reopened after blue ends (this is the key fix)
+      // The pattern should be: blue-close + red-reopen
+      expect(result).toContain('\x1b[39m\x1b[31m');
+
+      // Check that the text content is correct
+      expect(result).toContain('Before');
+      expect(result).toContain('middle');
+      expect(result).toContain('after');
+    });
   });
 
   describe('Custom pigment instance', () => {
@@ -242,7 +264,8 @@ describe('Pigment Integration Tests', () => {
 
     it('should handle empty strings', () => {
       const result = pigment.red('');
-      expect(result).toContain('\x1b[31m');
+      // Empty strings should return empty without unnecessary ANSI codes
+      expect(result).toBe('');
     });
 
     it('should handle special characters', () => {

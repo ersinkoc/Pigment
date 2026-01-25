@@ -77,7 +77,7 @@ import type {
 // Re-export from @oxog packages
 export { createKernel } from '@oxog/plugin';
 export type { MaybePromise, Unsubscribe } from '@oxog/types';
-import { detectColorSupport, supportsColor } from './utils/color-support.js';
+import { detectColorSupport, supportsColor, resetColorSupportCache } from './utils/color-support.js';
 import {
   detectPlatform,
   isNode,
@@ -194,6 +194,7 @@ export { plugins };
 export {
   detectColorSupport,
   supportsColor,
+  resetColorSupportCache,
   detectPlatform,
   isNode,
   isBrowser,
